@@ -16,5 +16,5 @@ public interface IConsoleCommand
     ///
     /// <author>Almighty-Shogun</author>
     /// <since>1.0.0</since>
-    public Task InternallyExecuteCommandAsync(string[] args);
+    Task InternallyExecuteCommandAsync(string[] args);
 }
