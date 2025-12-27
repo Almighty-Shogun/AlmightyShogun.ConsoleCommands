@@ -3,14 +3,16 @@ namespace AlmightyShogun.ConsoleCommands;
 public interface IConsoleCommandHandler
 {
     /// <summary>
-    /// Handles the execution of a console command based on the provided input.
+    /// Starts the asynchronous operation for handling console commands.
     /// </summary>
     /// 
-    /// <param name="input">The user's input representing the console command and its arguments.</param>
+    /// <param name="cancellationToken"> A token to monitor for cancellation requests.</param>
+    /// <returns>
     /// 
-    /// <returns>A task that represents the asynchronous operation of handling the command.</returns>
+    /// A task that represents the asynchronous operation of starting the console command handler.
+    /// </returns>
     ///
     /// <author>Almighty-Shogun</author>
-    /// <since>1.0.0</since>
-    public Task HandleCommandAsync(string input);
+    /// <since>1.1.0</since>
+    Task StartAsync(CancellationToken cancellationToken = default);
 }

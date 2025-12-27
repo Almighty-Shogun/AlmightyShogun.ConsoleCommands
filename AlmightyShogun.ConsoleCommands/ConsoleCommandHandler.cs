@@ -25,8 +25,28 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
         }
     }
 
-    /// <inheritdoc/>
-    public async Task HandleCommandAsync(string input)
+    /// <inheritdoc />
+    public async Task StartAsync(CancellationToken cancellationToken = default)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            string input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
+            
+            await HandleCommandAsync(input);
+        }
+    }
+
+    /// <summary>
+    /// Handles the execution of a console command based on the provided input.
+    /// </summary>
+    /// 
+    /// <param name="input">The user's input representing the console command and its arguments.</param>
+    /// 
+    /// <returns>A task that represents the asynchronous operation of handling the command.</returns>
+    ///
+    /// <author>Almighty-Shogun</author>
+    /// <since>1.0.0</since>
+    private async Task HandleCommandAsync(string input)
     {
         ConsoleUtils.RemoveLastConsoleLine();
         
@@ -39,7 +59,10 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
         }
         else
         {
-            _logger.LogWarning("{CommandName:c} is not registered as a console command", commandName);
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("{CommandName:c} is not registered as a console command", commandName);
+            }
         }
     }
 }
