@@ -28,25 +28,31 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
     /// <inheritdoc />
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
+        Console.TreatControlCAsInput = false;
+
         while (!cancellationToken.IsCancellationRequested)
         {
-            Console.TreatControlCAsInput = false;
+            string? input;
 
             try
             {
-                string input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    ConsoleUtils.RemoveLastConsoleLine();
-                    continue;
-                }
-            
-                await HandleCommandAsync(input);
+                input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                ConsoleUtils.RemoveLastConsoleLine();
+                continue;
+            }
+
+            await HandleCommandAsync(input);
         }
     }
+
 
     /// <summary>
     /// Handles the execution of a console command based on the provided input.
