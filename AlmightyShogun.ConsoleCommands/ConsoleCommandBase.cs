@@ -5,14 +5,14 @@ namespace AlmightyShogun.ConsoleCommands;
 
 public abstract class ConsoleCommandBase : IConsoleCommand
 {
-    public string Name { get; }
+    public required string Name { get; init; }
     public string? Usage { get; }
-    public string Description { get; }
+    public required string Description { get; init; }
     public IReadOnlyList<string> Aliases => _aliases;
 
     private readonly List<string> _aliases = [];
     private readonly MethodInfo? _handlerMethod;
-    private readonly ParameterInfo[] _parameters;
+    private readonly ParameterInfo[] _parameters = [];
     private readonly ILogger<ConsoleCommandBase> _logger;
     private readonly ConsoleCommandAttribute? _attribute;
 
@@ -42,8 +42,11 @@ public abstract class ConsoleCommandBase : IConsoleCommand
             
             return;
         }
-        
-        _logger.LogWarning("No method with ConsoleCommandAttribute found in {Name:r}", GetType().Name);
+
+        if (_logger.IsEnabled(LogLevel.Warning))
+        {
+            _logger.LogWarning("No method with ConsoleCommandAttribute found in {Name:y}", GetType().Name);
+        }
     }
 
     /// <summary>
@@ -62,7 +65,11 @@ public abstract class ConsoleCommandBase : IConsoleCommand
         
         if (args.Length < realParameters.Length || !_attribute!.IgnoreExtraArgs && args.Length > _parameters.Length)
         {
-            _logger.LogWarning("Invalid number of parameters on command {Name:r}. Expected {ParametersLength}, got {ArgsLength}", Name, _parameters.Length, args.Length);
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Invalid number of parameters on command {Name:c}. Expected {ParametersLength}, got {ArgsLength}", Name, _parameters.Length, args.Length);
+            }
+            
             return;
         }
 
@@ -116,9 +123,12 @@ public abstract class ConsoleCommandBase : IConsoleCommand
             }
             catch (Exception ex) when (ex is ArgumentNullException or ArgumentException or OverflowException or InvalidCastException)
             {
-                _logger.LogWarning("Invalid enum value {Value:b} for parameter {ParamName:b}. Valid values are: {ValidValues:c}", 
-                    argument, parameterInfo.Name, string.Join(", ", Enum.GetNames(parameterType)));
-
+                if (_logger.IsEnabled(LogLevel.Warning))
+                {
+                    _logger.LogWarning("Invalid enum value {Value:b} for parameter {ParamName:b}. Valid values are: {ValidValues:c}", 
+                        argument, parameterInfo.Name, string.Join(", ", Enum.GetNames(parameterType)));
+                }
+                
                 return null;
             }
         }
@@ -129,9 +139,12 @@ public abstract class ConsoleCommandBase : IConsoleCommand
         }
         catch (Exception ex) when (ex is InvalidCastException or FormatException or OverflowException or ArgumentNullException)
         {
-            _logger.LogWarning("Cannot convert value {Value:b} to type {Type:c} for parameter {ParamName:b}",
-                argument, parameterType.Name, parameterInfo.Name);
-                
+            if (_logger.IsEnabled(LogLevel.Warning))
+            {
+                _logger.LogWarning("Cannot convert value {Value:b} to type {Type:c} for parameter {ParamName:b}",
+                    argument, parameterType.Name, parameterInfo.Name);
+            }
+            
             return null;
         }
     }
