@@ -30,9 +30,21 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            string input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
+            Console.TreatControlCAsInput = false;
+
+            try
+            {
+                string input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUtils.RemoveLastConsoleLine();
+                    continue;
+                }
             
-            await HandleCommandAsync(input);
+                await HandleCommandAsync(input);
+            }
+            catch (OperationCanceledException) { }
         }
     }
 
