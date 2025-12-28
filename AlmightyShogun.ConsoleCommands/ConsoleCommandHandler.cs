@@ -36,24 +36,20 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
 
             try
             {
-                input = await Console.In.ReadLineAsync(cancellationToken) ?? string.Empty;
+                input = await Console.In.ReadLineAsync(cancellationToken);
             }
             catch (OperationCanceledException)
             {
-                break;
-            }
-
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                ConsoleUtils.RemoveLastConsoleLine();
                 continue;
             }
 
-            await HandleCommandAsync(input);
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                await HandleCommandAsync(input);
+            }
         }
     }
-
-
+    
     /// <summary>
     /// Handles the execution of a console command based on the provided input.
     /// </summary>
