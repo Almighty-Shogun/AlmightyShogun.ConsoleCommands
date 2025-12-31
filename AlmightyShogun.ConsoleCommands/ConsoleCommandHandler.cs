@@ -75,7 +75,7 @@ public class ConsoleCommandHandler : IConsoleCommandHandler
         {
             if (_logger.IsEnabled(LogLevel.Warning))
             {
-                _logger.LogWarning("{CommandName:c} is not registered as a console command", commandName);
+                _logger.LogWarning("{CommandName:y} is not registered as a console command", commandName);
             }
         }
     }
