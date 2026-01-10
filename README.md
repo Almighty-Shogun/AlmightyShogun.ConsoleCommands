@@ -1,4 +1,4 @@
-# ConsoleCommands
+# Console Commands
 A simple C# implementation for console commands using attributes.
 
 ## 📃 Prerequisites
