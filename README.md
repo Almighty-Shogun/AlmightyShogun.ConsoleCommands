@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repository has been archived and the `AlmightyShogun.ConsoleCommands` package has been transfered to [Almighty-Shogun/NuGetPackages](https://github.com/Almighty-Shogun/NuGetPackages)
+
 # Console Commands
 A simple C# implementation for console commands using attributes.
 
